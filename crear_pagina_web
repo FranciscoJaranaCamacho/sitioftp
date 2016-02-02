@@ -10,19 +10,19 @@ else
 	mkdir /var/www/iesgn/$DEPTO #Crear directorio
 	head -n -6 /etc/apache2/sites-available/sitio1.conf > /etc/apache2/sites-available/sitio1.tmp #Crear fichero temporal, que se editará en lugar del original
 	# Introducir la configuración para el nuevo sitio
-	echo '        Alias /'$DEPTO' /home/user_'$DEPTO'/ftp' >> /etc/apache2/sites-available/sitio1.tmp
-	echo '        <Directory "/home/user_'$DEPTO'/ftp">' >> /etc/apache2/sites-available/sitio1.tmp
-	echo '                Options +Indexes +FollowSymLinks' >> /etc/apache2/sites-available/sitio1.tmp
-	echo '                AllowOverride None' >> /etc/apache2/sites-available/sitio1.tmp
-	echo '                Require all granted' >> /etc/apache2/sites-available/sitio1.tmp
-	echo '        </Directory>' >> /etc/apache2/sites-available/sitio1.tmp
+	echo "        Alias /$DEPTO /home/user_$DEPTO/ftp" >> /etc/apache2/sites-available/sitio1.tmp
+	echo '        <Directory "/home/user_'"$DEPTo"'/ftp">' >> /etc/apache2/sites-available/sitio1.tmp
+	echo "                Options +Indexes +FollowSymLinks" >> /etc/apache2/sites-available/sitio1.tmp
+	echo "                AllowOverride None" >> /etc/apache2/sites-available/sitio1.tmp
+	echo "                Require all granted" >> /etc/apache2/sites-available/sitio1.tmp
+	echo "        </Directory>" >> /etc/apache2/sites-available/sitio1.tmp
 	tail -n 7 /etc/apache2/sites-available/sitio1.conf >> /etc/apache2/sites-available/sitio1.tmp
 	/etc/apache2/sites-available/sitio1.tmp > /etc/apache2/sites-available/sitio1.conf # Reemplazar el fichero .tmp por el original
 	rm /etc/apache2/sites-available/sitio1.tmp # Borrar el fichero .tmp
-	adduser 'user_'$DEPTO # Crear el usuario para el departamento
-	passwd 'user_'$DEPTO # Ponerle contraseña
-	mkdir '/home/user_'$DEPTO'/ftp' # Crear la carpeta ftp dentro del directorio personal del usuario y cambiar propietario
-	chown 'user_'$DEPTO:'user_'$DEPTO '/home/user_'$DEPTO'/ftp'
-	echo '<h1>Bienvenido al departamento '$DEPTO'.</h1>' > '/home/user_'$DEPTO'/ftp/index.html' # Crear el fichero index.html y cambiarle el propietario
-	chown 'user_'$DEPTO:'user_'$DEPTO '/home/user_'$DEPTO'/ftp/index.html'
+	# Crear el usuario para el departamento y ponerle contraseña
+	useradd "user_$DEPTO" -p "user_$DEPTO" -m -s "/bin/bash"
+	mkdir "/home/user_$DEPTO/ftp" # Crear la carpeta ftp dentro del directorio personal del usuario y cambiar propietario
+	chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp"
+	echo "<h1>Bienvenido al departamento $DEPTO.</h1>" > "/home/user_$DEPTO/ftp/index.html" # Crear el fichero index.html y cambiarle el propietario
+	chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp/index.html"
 fi
