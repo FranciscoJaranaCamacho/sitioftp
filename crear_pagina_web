@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo '¿Qué departamento quieres crear?'
+read DEPTO
+
+if [ -d /var/www/iesgn/$DEPTO ]; then
+	echo 'Ya existe ese departamento.'
+else
+	mkdir /var/www/iesgn/$DEPTO
+	sed -e :a -e '$d;N;2,6ba' -e 'P;D' /etc/apache2/sites-available/sitio1.conf > /etc/apache2/sites-available/sitio1.tmp
+	echo '        Alias /'$DEPTO' /home/user_'$DEPTO'/ftp' >> /etc/apache2/sites-available/sitio1.tmp
+	echo '        <Directory "/home/user_'$DEPTO'/ftp">' >> /etc/apache2/sites-available/sitio1.tmp
+	echo '                Options +Indexes +FollowSymLinks' >> /etc/apache2/sites-available/sitio1.tmp
+	echo '                AllowOverride None' >> /etc/apache2/sites-available/sitio1.tmp
+	echo '                Require all granted' >> /etc/apache2/sites-available/sitio1.tmp
+	echo '        </Directory>' >> /etc/apache2/sites-available/sitio1.tmp
+	tail -n 7 /etc/apache2/sites-available/sitio1.conf >> /etc/apache2/sites-available/sitio1.tmp
+	/etc/apache2/sites-available/sitio1.tmp > /etc/apache2/sites-available/sitio1.conf
+	rm /etc/apache2/sites-available/sitio1.tmp
+fi
