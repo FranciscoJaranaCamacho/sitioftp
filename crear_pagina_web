@@ -4,7 +4,7 @@ echo '¿Qué departamento quieres crear?'
 read DEPTO
 
 #Comprobar primero si existe el departamento en el sitio web
-if [ -d /var/www/iesgn/$DEPTO ]; then
+if [ -d "/var/www/iesgn/$DEPTO" ]; then
 	echo 'Ya existe ese departamento.'
 else
 	mkdir /var/www/iesgn/$DEPTO #Crear directorio
