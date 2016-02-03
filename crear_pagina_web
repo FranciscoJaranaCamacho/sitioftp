@@ -25,5 +25,8 @@ else
         chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp"
         echo "<h1>Bienvenido al departamento $DEPTO.</h1>" > "/home/user_$DEPTO/ftp/index.html" # Crear el fichero index.html y cambiarle el propietario
         chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp/index.html"
+# Editar la configuración de ftp
+        echo " " >> /etc/proftpd/proftpd.conf
+        echo "DefaultRoot     /home/user_$DEPTO/ftp user_$DEPTO" >> /etc/proftpd/proftpd
 fi
 
