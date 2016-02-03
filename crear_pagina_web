@@ -28,5 +28,6 @@ else
 # Editar la configuración de ftp
         echo " " >> /etc/proftpd/proftpd.conf
         echo "DefaultRoot     /home/user_$DEPTO/ftp user_$DEPTO" >> /etc/proftpd/proftpd
+        systemctl restart proftpd.service
+        systemctl restart apache2.service
 fi
-
