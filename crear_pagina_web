@@ -27,7 +27,7 @@ else
         chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp/index.html"
 # Editar la configuración de ftp
         echo " " >> /etc/proftpd/proftpd.conf
-        echo "DefaultRoot     /home/user_$DEPTO/ftp user_$DEPTO" >> /etc/proftpd/proftpd
+        echo "DefaultRoot     /home/user_$DEPTO/ftp user_$DEPTO" >> /etc/proftpd/proftpd.conf
         systemctl restart proftpd.service
         systemctl restart apache2.service
 fi
