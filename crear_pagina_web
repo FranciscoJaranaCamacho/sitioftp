@@ -2,16 +2,18 @@
 
 echo '¿Qué departamento quieres crear?'
 read DEPTO
+USUARIO=user_$DEPTO
 
 #Comprobar primero si existe el departamento en el sitio web
 if [ -d "/var/www/iesgn/$DEPTO" ]; then
         echo 'Ya existe ese departamento.'
 else
         mkdir /var/www/iesgn/$DEPTO #Crear directorio
+        chown -R www-data:www-data /var/www/iesgn/$DEPTO
         head -n -12 /etc/apache2/sites-available/sitio1.conf > sitio1.tmp #Crear fichero temporal, que se editará en lugar del original
 # Introducir la configuración para el nuevo sitio
-        echo "        Alias /$DEPTO /home/user_$DEPTO/ftp" >> sitio1.tmp
-        echo '        <Directory "/home/user_'"$DEPTO"'/ftp">' >> sitio1.tmp
+        echo "        Alias /$DEPTO /home/$USUARIO/ftp" >> sitio1.tmp
+        echo '        <Directory "/home/'"$USUARIO"'/ftp">' >> sitio1.tmp
         echo "                Options +Indexes +FollowSymLinks" >> sitio1.tmp
         echo "                AllowOverride None" >> sitio1.tmp
         echo "                Require all granted" >> sitio1.tmp
@@ -20,14 +22,12 @@ else
         cat sitio1.tmp > /etc/apache2/sites-available/sitio1.conf # Reemplazar el fichero .tmp por el original
         rm sitio1.tmp # Borrar el fichero .tmp
 # Crear el usuario para el departamento y ponerle contraseña
-        useradd "user_$DEPTO" -p "user_$DEPTO" -m -s "/bin/bash"
-        mkdir "/home/user_$DEPTO/ftp" # Crear la carpeta ftp dentro del directorio personal del usuario y cambiar propietario
-        chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp"
-        echo "<h1>Bienvenido al departamento $DEPTO.</h1>" > "/home/user_$DEPTO/ftp/index.html" # Crear el fichero index.html y cambiarle el propietario
-        chown "user_$DEPTO:user_$DEPTO" "/home/user_$DEPTO/ftp/index.html"
+        useradd $USUARIO -p $DEPTO -m -s /bin/bash
+        mkdir /home/$USUARIO/ftp # Crear la carpeta ftp dentro del directorio personal del usuario y cambiar propietario
+        echo "<h1>Bienvenido al departamento $DEPTO.</h1>" > /home/$USUARIO/ftp/index.html # Crear el fichero index.html y cambiarle el propietario
+        chown -R $USUARIO:$USUARIO /home/$USUARIO
 # Editar la configuración de ftp
-        echo " " >> /etc/proftpd/proftpd.conf
-        echo "DefaultRoot     /home/user_$DEPTO/ftp user_$DEPTO" >> /etc/proftpd/proftpd.conf
+        echo "DefaultRoot     /home/$USUARIO/ftp $USUARIO" >> /etc/proftpd/proftpd.conf
         systemctl restart proftpd.service
         systemctl restart apache2.service
 fi
