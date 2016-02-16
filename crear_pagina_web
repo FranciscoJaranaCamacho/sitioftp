@@ -3,7 +3,8 @@
 echo '¿Qué departamento quieres crear?'
 read DEPTO
 USUARIO=user_$DEPTO
-
+echo $DEPTO > fich1.tmp
+echo $DEPTO >> fich1.tmp
 #Comprobar primero si existe el departamento en el sitio web
 if [ -d "/var/www/iesgn/$DEPTO" ]; then
         echo 'Ya existe ese departamento.'
@@ -22,7 +23,9 @@ else
         cat sitio1.tmp > /etc/apache2/sites-available/sitio1.conf # Reemplazar el fichero .tmp por el original
         rm sitio1.tmp # Borrar el fichero .tmp
 # Crear el usuario para el departamento y ponerle contraseña
-        useradd $USUARIO -p $DEPTO -m -s /bin/bash
+        useradd $USUARIO -m -s /bin/bash
+        passwd $USUARIO < fich1.tmp
+        rm fich1.tmp
         mkdir /home/$USUARIO/ftp # Crear la carpeta ftp dentro del directorio personal del usuario y cambiar propietario
         echo "<h1>Bienvenido al departamento $DEPTO.</h1>" > /home/$USUARIO/ftp/index.html # Crear el fichero index.html y cambiarle el propietario
         chown -R $USUARIO:$USUARIO /home/$USUARIO
